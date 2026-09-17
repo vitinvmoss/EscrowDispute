@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EscrowDispute — AI-Arbitrated Marketplace Escrow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #12151C;
+    --panel: #1A1F2B;
+    --panel-2: #202638;
+    --paper: #EDE7D9;
+    --paper-dim: #B9B3A2;
+    --brass: #C9A227;
+    --brass-dim: #8E7420;
+    --release: #6FAE84;
+    --refund: #C97A5C;
+    --rule: rgba(237, 231, 217, 0.14);
+    --serif: 'Source Serif 4', Georgia, serif;
+    --mono: 'IBM Plex Mono', 'SF Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { background: var(--ink); }
+
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--serif);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--brass); text-decoration: none; border-bottom: 1px solid var(--brass-dim); }
+  a:hover { border-bottom-color: var(--brass); }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  header.masthead {
+    border-bottom: 1px solid var(--rule);
+    padding: 56px 0 40px;
+  }
+
+  .case-number {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--brass);
+    margin: 0 0 18px;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(34px, 6vw, 52px);
+    line-height: 1.08;
+    margin: 0 0 14px;
+    max-width: 14ch;
+  }
+
+  .tagline {
+    font-size: 18px;
+    color: var(--paper-dim);
+    max-width: 48ch;
+    margin: 0;
+  }
+
+  .track-pill {
+    display: inline-block;
+    margin-top: 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 6px 12px;
+    border-radius: 3px;
+    background: var(--panel);
+  }
+
+  section {
+    padding: 44px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  section:last-of-type { border-bottom: none; }
+
+  h2 {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--brass);
+    margin: 0 0 20px;
+  }
+
+  p { font-size: 17px; color: var(--paper); max-width: 62ch; }
+  p.dim { color: var(--paper-dim); }
+
+  .status-strip {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 26px 0 4px;
+    padding: 16px 18px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--release);
+    flex-shrink: 0;
+    animation: settle 900ms ease-out;
+  }
+
+  @keyframes settle {
+    0% { transform: scale(2.4); opacity: 0; }
+    60% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  .status-strip .label { font-family: var(--mono); font-size: 13px; color: var(--paper-dim); }
+  .status-strip .value { font-family: var(--mono); font-size: 13px; color: var(--paper); }
+
+  ol.steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: step;
+  }
+
+  ol.steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    gap: 4px 16px;
+    padding: 18px 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  ol.steps li:first-child { border-top: none; }
+
+  ol.steps li::before {
+    content: counter(step);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--brass);
+    padding-top: 2px;
+  }
+
+  ol.steps .step-title {
+    font-weight: 600;
+    font-size: 16px;
+    margin: 0 0 4px;
+  }
+
+  ol.steps .step-body {
+    font-size: 15px;
+    color: var(--paper-dim);
+    margin: 0;
+    grid-column: 2;
+  }
+
+  .verdicts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 520px) {
+    .verdicts { grid-template-columns: 1fr; }
+  }
+
+  .verdict-card {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    border-radius: 4px;
+    padding: 16px 18px;
+  }
+
+  .verdict-card .v-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    margin: 0 0 8px;
+  }
+
+  .verdict-card.release .v-label { color: var(--release); }
+  .verdict-card.refund .v-label { color: var(--refund); }
+
+  .verdict-card p { font-size: 14px; margin: 0; color: var(--paper-dim); }
+
+  .ledger {
+    border: 1px solid var(--rule);
+    background: var(--panel);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .ledger-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  .ledger-row:last-child { border-bottom: none; }
+  .ledger-row .k { color: var(--paper-dim); }
+  .ledger-row .v { color: var(--paper); text-align: right; word-break: break-all; }
+
+  .copy-btn {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--brass);
+    background: transparent;
+    border: 1px solid var(--brass-dim);
+    border-radius: 3px;
+    padding: 5px 9px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .copy-btn:hover { border-color: var(--brass); }
+
+  table.methods {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  table.methods th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    color: var(--paper-dim);
+    font-weight: 500;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  table.methods td {
+    padding: 14px 14px 14px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+
+  table.methods tr:last-child td { border-bottom: none; }
+
+  table.methods code {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--brass);
+  }
+
+  table.methods .type-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    color: var(--paper-dim);
+    white-space: nowrap;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .btn {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    border: 1px solid var(--brass-dim);
+    color: var(--paper);
+    display: inline-block;
+  }
+
+  .btn.primary {
+    background: var(--brass);
+    color: var(--ink);
+    border-color: var(--brass);
+    font-weight: 600;
+  }
+
+  .btn.primary:hover { background: #DBB235; border-color: #DBB235; }
+  .btn:not(.primary):hover { background: var(--panel-2); }
+  .btn { border-bottom: 1px solid var(--brass-dim); }
+  .btn.primary { border-bottom: 1px solid var(--brass); }
+
+  footer {
+    padding: 40px 0 64px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--paper-dim);
+  }
+
+  footer a { color: var(--paper-dim); border-bottom: 1px solid var(--rule); }
+  footer a:hover { color: var(--brass); border-bottom-color: var(--brass); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <p class="case-number">CASE FILE — ONCHAIN JUSTICE TRACK</p>
+    <h1>EscrowDispute</h1>
+    <p class="tagline">AI-arbitrated escrow for marketplace disputes. GenLayer validators judge deliverables against the agreed spec and settle funds automatically — no human moderator required.</p>
+    <span class="track-pill">GenLayer Agent Tank Hackathon · Onchain Justice</span>
+  </header>
+
+  <section>
+    <h2>THE DISPUTE PROBLEM</h2>
+    <p>Ordinary smart contracts can verify a signature or a balance. They cannot tell whether a freelance logo, a piece of writing, or any creative deliverable actually satisfies what was agreed. That judgment call is usually left to a platform, a support ticket, or a slow human arbitrator.</p>
+    <p class="dim">EscrowDispute puts that judgment onchain instead — resolved by consensus among independent AI validators, not a single party with a thumb on the scale.</p>
+  </section>
+
+  <section>
+    <h2>HOW IT WORKS</h2>
+    <ol class="steps">
+      <li>
+        <p class="step-title">Buyer opens the case</p>
+        <p class="step-body">Deploys the contract with the seller's address and a plain-language spec — e.g. "Design a vector logo containing a blue dragon."</p>
+      </li>
+      <li>
+        <p class="step-title">Seller submits the deliverable</p>
+        <p class="step-body">Calls <code style="font-family: var(--mono); color: var(--brass);">submit_work</code> with a link or description of the completed work.</p>
+      </li>
+      <li>
+        <p class="step-title">The AI jury is convened</p>
+        <p class="step-body">Calling <code style="font-family: var(--mono); color: var(--brass);">resolve_dispute</code> triggers independent GenLayer validators to each evaluate the deliverable against the spec, then reach consensus through GenLayer's Equivalence Principle.</p>
+      </li>
+      <li>
+        <p class="step-title">Verdict settles automatically</p>
+        <p class="step-body">The contract updates its own status and the outcome is final — no appeal panel, no support queue.</p>
+      </li>
+    </ol>
+
+    <div class="verdicts">
+      <div class="verdict-card release">
+        <p class="v-label">RELEASED_TO_SELLER</p>
+        <p>Deliverable satisfies the spec. Funds move to the seller.</p>
+      </div>
+      <div class="verdict-card refund">
+        <p class="v-label">REFUNDED_TO_BUYER</p>
+        <p>Deliverable does not satisfy the spec. Funds return to the buyer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>DEPLOYED INSTANCE</h2>
+    <div class="status-strip">
+      <span class="status-dot"></span>
+      <span class="label">status —</span>
+      <span class="value">live on GenLayer Studio</span>
+    </div>
+    <div class="ledger" style="margin-top: 18px;">
+      <div class="ledger-row">
+        <span class="k">contract address</span>
+        <span class="v" id="ca">0x7EFEF2398F6c61Ddd9064cdA03c6fDF421e82Aa1</span>
+      </div>
+      <div class="ledger-row">
+        <span class="k">network</span>
+        <span class="v">GenLayer Studio (devnet)</span>
+      </div>
+      <div class="ledger-row">
+        <span class="k">consensus model</span>
+        <span class="v">gl.eq_principle.strict_eq</span>
+      </div>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="https://studio.genlayer.com/run-debug" target="_blank" rel="noopener">Open in GenLayer Studio →</a>
+      <a class="btn" href="https://github.com/vitinvmoss/EscrowDispute" target="_blank" rel="noopener">View source on GitHub</a>
+    </div>
+  </section>
+
+  <section>
+    <h2>CONTRACT METHODS</h2>
+    <table class="methods">
+      <thead>
+        <tr><th>Method</th><th>Type</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>get_status()</code></td>
+          <td><span class="type-tag">view</span></td>
+          <td>Returns current case status.</td>
+        </tr>
+        <tr>
+          <td><code>submit_work(work_link)</code></td>
+          <td><span class="type-tag">write</span></td>
+          <td>Seller submits proof of the completed deliverable.</td>
+        </tr>
+        <tr>
+          <td><code>resolve_dispute()</code></td>
+          <td><span class="type-tag">write</span></td>
+          <td>Convenes the AI jury and settles the case.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    Built for the GenLayer Agent Tank Hackathon, Onchain Justice track.<br>
+    <a href="https://github.com/vitinvmoss/EscrowDispute" target="_blank" rel="noopener">github.com/vitinvmoss/EscrowDispute</a>
+  </footer>
+
+</div>
+
+</body>
+</html>
+ 
