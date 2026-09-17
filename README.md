@@ -30,7 +30,7 @@ dispute needs.
 
 ## Deployed Contract
 
-- **Address:** `[PASTE YOUR FINAL CONTRACT ADDRESS HERE]`
+- **Address:** `0x7EFEF2398F6c61Ddd9064cdA03c6fDF421e82Aa1`
 - **Network:** GenLayer Studio (Studio Next / Devnet)
 - **Explorer / Studio link:** `[PASTE YOUR STUDIO LINK HERE]`
 
