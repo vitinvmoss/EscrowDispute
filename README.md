@@ -31,8 +31,9 @@ dispute needs.
 ## Deployed Contract
 
 - **Address:** `0x7EFEF2398F6c61Ddd9064cdA03c6fDF421e82Aa1`
-- **Network:** GenLayer Studio (Studio Next / Devnet)
-- **Explorer / Studio link:** `[PASTE YOUR STUDIO LINK HERE]`
+- **Network:** GenLayer Studio (devnet)
+- **Studio link:** https://studio.genlayer.com/run-debug
+- **Live project page:** https://claude.ai/artifact/Y6sQ5J7KZyBLTDNk5i4F92
 
 ## Contract Methods
 
@@ -62,6 +63,6 @@ return `REFUNDED_TO_BUYER`.
 - Consensus: GenLayer Optimistic Democracy, `gl.eq_principle.strict_eq`
 - LLM judging: `gl.nondet.exec_prompt`
 
-## Author
+## Repo
 
-`[YOUR NAME / HANDLE]`
+https://github.com/vitinvmoss/EscrowDispute
