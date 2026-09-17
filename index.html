@@ -223,8 +223,8 @@
   }
 
   .ledger-row:last-child { border-bottom: none; }
-  .ledger-row .k { color: var(--paper-dim); }
-  .ledger-row .v { color: var(--paper); text-align: right; word-break: break-all; }
+  .ledger-row .k { color: var(--paper-dim); flex-shrink: 0; }
+  .ledger-row .v { color: var(--paper); text-align: right; word-break: break-all; flex: 1; }
 
   .copy-btn {
     font-family: var(--mono);
@@ -382,6 +382,7 @@
       <div class="ledger-row">
         <span class="k">contract address</span>
         <span class="v" id="ca">0x7EFEF2398F6c61Ddd9064cdA03c6fDF421e82Aa1</span>
+        <button class="copy-btn" id="copy-ca-btn" onclick="copyAddress()">copy</button>
       </div>
       <div class="ledger-row">
         <span class="k">network</span>
@@ -392,11 +393,40 @@
         <span class="v">gl.eq_principle.strict_eq</span>
       </div>
     </div>
+
+    <ol class="steps" style="margin-top: 20px;">
+      <li>
+        <p class="step-title">Copy the contract address above</p>
+        <p class="step-body">Use the "copy" button next to it.</p>
+      </li>
+      <li>
+        <p class="step-title">Open GenLayer Studio</p>
+        <p class="step-body">The button below takes you to Studio's homepage — it does not load this contract automatically.</p>
+      </li>
+      <li>
+        <p class="step-title">Load the contract by address</p>
+        <p class="step-body">In Studio, use the "load contract" / address search option and paste the address you copied in step 1.</p>
+      </li>
+    </ol>
+
     <div class="cta-row">
-      <a class="btn primary" href="https://studio.genlayer.com/run-debug" target="_blank" rel="noopener">Open in GenLayer Studio →</a>
+      <a class="btn primary" href="https://studio.genlayer.com/run-debug" target="_blank" rel="noopener">Open GenLayer Studio →</a>
       <a class="btn" href="https://github.com/vitinvmoss/EscrowDispute" target="_blank" rel="noopener">View source on GitHub</a>
     </div>
   </section>
+
+  <script>
+    function copyAddress() {
+      const address = document.getElementById('ca').textContent;
+      const btn = document.getElementById('copy-ca-btn');
+      navigator.clipboard.writeText(address).then(function () {
+        btn.textContent = 'copied';
+        setTimeout(function () { btn.textContent = 'copy'; }, 1800);
+      }).catch(function () {
+        btn.textContent = 'select & copy manually';
+      });
+    }
+  </script>
 
   <section>
     <h2>CONTRACT METHODS</h2>
@@ -433,4 +463,3 @@
 
 </body>
 </html>
- 
